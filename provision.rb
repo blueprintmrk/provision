@@ -1,8 +1,27 @@
 #! /usr/bin/env ruby
 
+
 USERS=["scientia"]
-PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"].map{ |p| Package.new(p) }
+PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
 EMAIL="alex.sayers@gmail.com"
+
+
+class Package
+  def initialize name
+    @name = name
+  end
+  def to_s
+    @name
+  end
+  def installed?
+    !`pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/).nil?
+  end
+  def install!
+    `pacman -S #{@name}`
+  end
+end
+PACKAGES.map! { |p| Package.new(p) }
+
 
 print "Checking pacman keyring is populated... "
 if `pacman-key -l`.empty?
@@ -39,18 +58,3 @@ USERS.each do |u|
 end
 # git clone git@github.com:asayers/$USER.git ~$USER
 
-
-class Package
-  def initialize name
-    @name = name
-  end
-  def to_s
-    @name
-  end
-  def installed?
-    !`pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/).nil?
-  end
-  def install!
-    `pacman -S #{@name}`
-  end
-end
