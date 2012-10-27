@@ -121,6 +121,7 @@ USERS.each do |u|
     puts "exists!"
   end
   if u.options[:gh_repo]
+    puts "Cloning into repo #{u.options[:gh_repo]}..."
     u.clone_from_gh! unless File.exist? "/home/#{u.name}/#{u.options[:gh_repo]}"
   end
 end
