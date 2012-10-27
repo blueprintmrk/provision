@@ -2,9 +2,8 @@
 
 EMAIL="alex.sayers@gmail.com"
 GH_USER="asayers"
-PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
-USERS=["scientia"]
-GH_PROJECTS={"scientia"=>"scientia"}
+PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
+USERS=["scientia"=>{db_user: true, gh_repo: "scientia"}]
 
 class Pacman
   def self.populated?
@@ -33,8 +32,10 @@ end
 PACKAGES.map! { |p| Package.new(p) }
 
 class User
-  def initialize name
+  attr_accessor :name, :options
+  def initialize name, options
     @name = name
+    @options = options
   end
   def to_s
     @name
@@ -52,9 +53,14 @@ class User
     # This doesn't work, because `` stops returning stdout once input has been requested. Use Popen instead.
     #`sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
   end
+  def clone_from_gh!
+    `sudo -u #{@name} cd && git clone git@github.com:#{GH_USER}/#{@options[:gh_repo]}.git`
+  end
+  def create_db_user!
+    `su - postgres -c "createuser -s #{@name}"`
+  end
 end
-USERS.map! { |u| User.new(u) }
-GH_PROJECTS.each{ |p,u| GH_PROJECTS[p] = User.new(u) }
+USERS.each { |user, opts| USERENTS << User.new(user, opts) }
 
 
 print "Checking pacman keyring is populated... "
@@ -79,18 +85,33 @@ PACKAGES.each do |p|
   end
 end
 
-USERS.each do |u|
+# Nginx setup
+`systemctl start nginx`
+
+# Postgres setup
+`chown -R postgres /var/lib/postgres/`
+unless File.exist? "/var/lib/postgres/data"
+  `su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"`
+end
+unless File.exist?("/run/postgresql")
+  `mkdir /run/postgresql`
+  `chown postgres /run/postgresql/`
+end
+`systemctl start postgresql`
+
+# Enable services at boot
+`systemctl enable nginx`
+`systemctl enable postgresql`
+
+USERENTS.each do |u|
   print "Checking for #{u}... "
   unless u.exists?
     puts "does not exist! Creating..."
     u.create!
     u.generate_ssh_key!
+    u.clone_from_gh! if u.options[:gh_repo]
+    u.create_db_user! if u.options[:db_user]
   else
     puts "exists!"
   end
-end
-
-GH_PROJECTS.each do |project, user|
-  puts "Cloning #{project}..."
-  `sudo -u #{user} cd && git clone git@github.com:#{GH_USER}/#{project}.git`
 end
