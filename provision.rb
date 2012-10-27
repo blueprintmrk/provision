@@ -49,7 +49,8 @@ class User
     `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
   def has_github_access?
-    `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
+    # This doesn't work, because `` stops returning stdout once input has been requested. Use Popen instead.
+    #`sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
   end
 end
 USERS.map! { |u| User.new(u) }
@@ -91,6 +92,5 @@ end
 
 GH_PROJECTS.each do |project, user|
   puts "Cloning #{project}..."
-  puts "Note: #{user} does not have commit access" unless user.has_github_access?
   `sudo -u #{user} git clone git@github.com:#{GH_USER}/#{project}.git ~#{user}/`
 end
