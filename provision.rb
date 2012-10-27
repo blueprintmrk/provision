@@ -1,30 +1,36 @@
 #! /usr/bin/env ruby
 
-users=["scientia"]
-packages=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
-email="alex.sayers@gmail.com"
+USERS=["scientia"]
+PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
+EMAIL="alex.sayers@gmail.com"
 
-puts "Checking pacman keyring is populated..."
+print "Checking pacman keyring is populated... "
 if `pacman-key -l`.empty?
+  puts "it is not! Populating..."
   `pacman-key --init`
   `pacman-key --populate archlinux`
+else
+  puts "it is!"
 end
-puts "Upgrading packages..."
+puts "Upgrading installed packages..."
 `pacman -Syu`
 packages.each do |p|
+  print "Checking #{p}... "
   if `pacman -Q git`.match(/^#{p} [0-9.-]*$/).nil?
-    puts "Installing #{p}..."
+    puts "not installed! Installing..."
     `pacman -S #{p}`
-    `sudo -u $USER ssh-keygen -t rsa -C #{email}`
   else
-    puts "#{p} already installed"
+    puts "already installed!"
   end
 end
 users.each do |u|
+  print "Checking #{u}... "
   if `cat /etc/passwd`.match(/^#{u}:/).nil?
+    puts "does not exist! Creating..."
     `useradd -m #{u}`
+    `sudo -u #{u} ssh-keygen -t rsa -C #{email}`
   else
-    puts "User #{u} exists"
+    puts "exists!"
   end
 end
 # git clone git@github.com:asayers/$USER.git ~$USER
