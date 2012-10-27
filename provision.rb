@@ -48,7 +48,7 @@ class User
   def generate_ssh_key!
     `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
-  def has_githib_access?
+  def has_github_access?
     `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GITHUB_USER}!/)
   end
 end
