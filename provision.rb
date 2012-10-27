@@ -24,7 +24,7 @@ class Package
     @name
   end
   def installed?
-    `pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/)
+    `pacman -Q #{@name}`.match(/^#{@name} [0-9a-z._-]*$/)
   end
   def install!
     `pacman -S --noconfirm #{@name}`
