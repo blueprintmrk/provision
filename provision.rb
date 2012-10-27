@@ -1,9 +1,6 @@
 #! /usr/bin/env ruby
 
-EMAIL="alex.sayers@gmail.com"
-GH_USER="asayers"
-PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
-USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"})]
+
 
 class Pacman
   def self.populated?
@@ -29,7 +26,6 @@ class Package
     `pacman -S --noconfirm #{@name}`
   end
 end
-PACKAGES.map! { |p| Package.new(p) }
 
 class User
   attr_accessor :name, :options
@@ -61,6 +57,13 @@ class User
   end
 end
 
+
+EMAIL="alex.sayers@gmail.com"
+GH_USER="asayers"
+PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
+USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"})]
+
+PACKAGES.map! { |p| Package.new(p) }
 
 print "Checking pacman keyring is populated... "
 unless Pacman.populated?
