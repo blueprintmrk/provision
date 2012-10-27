@@ -61,7 +61,7 @@ class User
   end
 end
 USERENTS = []
-USERS.each { |user, opts| USERENTS += User.new(user, opts) }
+USERS.each { |user, opts| USERENTS << User.new(user, opts) }
 
 
 print "Checking pacman keyring is populated... "
