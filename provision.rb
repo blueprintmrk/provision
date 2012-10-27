@@ -65,7 +65,7 @@ puts "Setting locale en_GB.UTF-8"
 
 # Install packages
 print "Upgrading installed packages..."
-`pacman -Syu`
+`pacman -Syu --noconfirm`
 puts "done!"
 PACKAGES.each do |p|
   print "Checking #{p}... "
