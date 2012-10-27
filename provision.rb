@@ -107,8 +107,10 @@ puts "Enabling serives at boot"
 `systemctl enable nginx`
 `systemctl enable postgresql`
 
+p USERENTS
+
 USERENTS.each do |u|
-  print "Checking for #{u.to_s}... "
+  print "Checking for #{u}... "
   unless u.exists?
     puts "does not exist! Creating..."
     u.create!
