@@ -91,6 +91,6 @@ end
 
 GH_PROJECTS.each do |project, user|
   puts "Cloning #{project}..."
-  puts "Note: #{user} does not have commit access" unless user.has_gthub_access?
+  puts "Note: #{user} does not have commit access" unless user.has_github_access?
   `sudo -u #{user} git clone git@github.com:#{GH_USER}/#{project}.git ~#{user}/`
 end
