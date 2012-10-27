@@ -92,5 +92,5 @@ end
 
 GH_PROJECTS.each do |project, user|
   puts "Cloning #{project}..."
-  `sudo -u #{user} git clone git@github.com:#{GH_USER}/#{project}.git ~#{user}/#{project}`
+  `sudo -u #{user} cd && git clone git@github.com:#{GH_USER}/#{project}.git`
 end
