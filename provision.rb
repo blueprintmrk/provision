@@ -104,13 +104,10 @@ puts "Setting up redis..."
 `systemctl start redis`
 
 # Enable services at boot
-print "Enabling serives at boot... "
-`systemctl enable nginx 1&2>/dev/null`
-print "nginx, "
-`systemctl enable postgresql 1&2>/dev/null`
-print "postgresql, "
-`systemctl enable redis 1&2>/dev/null`
-puts "redis"
+puts "Enabling serives at boot... "
+`systemctl enable nginx`
+`systemctl enable postgresql`
+`systemctl enable redis`
 
 # Create users
 USERS.each do |u|
