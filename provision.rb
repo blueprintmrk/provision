@@ -55,10 +55,11 @@ class User
 end
 
 # Set constants
-EMAIL="alex.sayers@gmail.com"
-GH_USER="asayers"
-PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
-USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"})]
+HOSTNAME  = "vanaheimr"
+EMAIL     = "alex.sayers@gmail.com"
+GH_USER   = "asayers"
+PACKAGES  = ["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
+USERS     = [User.new("scientia", {db_user: true, gh_repo: "scientia"})]
 
 PACKAGES.map! { |p| Package.new(p) }
 
