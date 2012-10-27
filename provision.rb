@@ -87,9 +87,11 @@ PACKAGES.each do |p|
 end
 
 # Nginx setup
+puts "Setting up nginx"
 `systemctl start nginx`
 
 # Postgres setup
+puts "Setting up postgres"
 `chown -R postgres /var/lib/postgres/`
 unless File.exist? "/var/lib/postgres/data"
   `su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"`
@@ -101,11 +103,12 @@ end
 `systemctl start postgresql`
 
 # Enable services at boot
+puts "Enabling serives at boot"
 `systemctl enable nginx`
 `systemctl enable postgresql`
 
 USERENTS.each do |u|
-  print "Checking for #{u}... "
+  print "Checking for #{u.to_s}... "
   unless u.exists?
     puts "does not exist! Creating..."
     u.create!
