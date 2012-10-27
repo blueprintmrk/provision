@@ -12,20 +12,23 @@ if `pacman-key -l`.empty?
 else
   puts "it is!"
 end
-puts "Upgrading installed packages..."
+
+print "Upgrading installed packages..."
 `pacman -Syu`
+puts "done!"
+
 PACKAGES.each do |p|
-  print "  Checking #{p}... "
-  if `pacman -Q git`.match(/^#{p} [0-9.-]*$/).nil?
+  print "Checking #{p}... "
+  if `pacman -Q #{p}`.match(/^#{p} [0-9.-]*$/).nil?
     puts "not installed! Installing..."
     `pacman -S #{p}`
   else
     puts "already installed!"
   end
 end
-puts "Setting up user accounts..."
+
 USERS.each do |u|
-  print "  Checking for #{u}... "
+  print "Checking for #{u}... "
   if `cat /etc/passwd`.match(/^#{u}:/).nil?
     puts "does not exist! Creating..."
     `useradd -m #{u}`
