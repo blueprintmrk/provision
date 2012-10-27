@@ -8,7 +8,7 @@ class Package
     @name
   end
   def installed?
-    `pacman -Q #{@name}`.match(/^#{@name} [0-9a-z._-]*$/)
+    `pacman -Q #{@name} 2>&1`.match(/^#{@name} [0-9a-z._-]*$/)
   end
   def install!
     `pacman -S --noconfirm #{@name}`
@@ -31,7 +31,7 @@ class User
     `useradd -m #{@name}`
   end
   def generate_ssh_key!
-    `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
+    `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL} -f /home/#{@name}/.ssh/id_rsa -N #{(0...8).map{65.+(rand(26)).chr}.join}`
   end
   def has_gh_access?
     `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com 2>&1`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
@@ -57,10 +57,10 @@ PACKAGES.map! { |p| Package.new(p) }
 #General setup
 puts "Setting hostname #{HOSTNAME}..."
 `echo "#{HOSTNAME}" > /etc/hostname`
-puts "Setting locale en_GB.UTF-8"
-`echo 'LANG="en_GB.UTF-8"' > /etc/locale.conf`
+puts "Setting locale en_US.UTF-8"
+`echo 'LANG="en_US.UTF-8"' > /etc/locale.conf`
 `echo "KEYMAP=uk\nFONT=\nFONT_MAP=" > /etc/vconsole.conf`
-`echo "en_GB.UTF-8 UTF-8" > /etc/locale.gen`
+`echo "en_US.UTF-8 UTF-8" > /etc/locale.gen`
 `locale-gen`
 
 # Install packages
@@ -99,11 +99,11 @@ puts "Setting up redis..."
 
 # Enable services at boot
 print "Enabling serives at boot... "
-`systemctl enable nginx`
+`systemctl enable nginx 1&2>/dev/null`
 print "nginx, "
-`systemctl enable postgresql`
+`systemctl enable postgresql 1&2>/dev/null`
 print "postgresql, "
-`systemctl enable redis`
+`systemctl enable redis 1&2>/dev/null`
 puts "redis"
 
 # Create users
