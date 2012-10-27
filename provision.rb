@@ -1,8 +1,10 @@
 #! /usr/bin/env ruby
 
-USERS=["scientia"]
-PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
 EMAIL="alex.sayers@gmail.com"
+GH_USER="asayers"
+PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
+USERS=["scientia"]
+GH_PROJECTS={"scientia"=>"scientia"}
 
 class Pacman
   def self.populated?
@@ -22,7 +24,7 @@ class Package
     @name
   end
   def installed?
-    return !`pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/).nil?
+    `pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/)
   end
   def install!
     `pacman -S --noconfirm #{@name}`
@@ -38,13 +40,16 @@ class User
     name
   end
   def exists?
-    return !`cat /etc/passwd`.match(/^#{u}:/).nil?
+    `cat /etc/passwd`.match(/^#{u}:/)
   end
   def create!
     `useradd -m #{u}`
   end
   def generate_ssh_key!
     `sudo -u #{u} ssh-keygen -t rsa -C #{EMAIL}`
+  end
+  def has_githib_access?
+    `sudo -u #{u} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GITHUB_USER}!/)
   end
 end
 USERS.map! { |u| User.new(u) }
@@ -82,4 +87,9 @@ USERS.each do |u|
     puts "exists!"
   end
 end
-# git clone git@github.com:asayers/$USER.git ~$USER
+
+GH_PROJECTS.each do |project, user|
+  puts "Cloning #{project}..."
+  puts "Note: #{user} does not have commit access" unless user.has_gthub_access?
+  `sudo -u #{user} git clone git@github.com:#{GH_USER}/#{project}.git ~#{user}/`
+end
