@@ -46,11 +46,10 @@ class User
     `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
   def has_github_access?
-    # This doesn't work, because `` stops returning stdout once input has been requested. Use Popen instead.
-    #`sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
+    `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com 2>&1`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
   end
   def clone_from_gh!
-    `sudo -u #{@name} cd && git clone git@github.com:#{GH_USER}/#{@options[:gh_repo]}.git`
+    `su - #{@name} -c "cd && git clone git@github.com:#{GH_USER}/#{@options[:gh_repo]}.git"`
   end
   def create_db_user!
     `su - postgres -c "createuser -s #{@name}"`
@@ -97,7 +96,7 @@ puts "Setting up postgres"
 unless File.exist? "/var/lib/postgres/data"
   `su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"`
 end
-unless File.exist?("/run/postgresql")
+unless File.exist? "/run/postgresql"
   `mkdir /run/postgresql`
   `chown postgres /run/postgresql/`
 end
@@ -114,9 +113,12 @@ USERS.each do |u|
     puts "does not exist! Creating..."
     u.create!
     u.generate_ssh_key!
-    u.clone_from_gh! if u.options[:gh_repo]
     u.create_db_user! if u.options[:db_user]
   else
     puts "exists!"
+  end
+  if u.options[:gh_repo]
+    puts "Warning! User doesn't have access to private repos!" unless u.has_gh_access?
+    u.clone_from_gh! unless File.exist? "/home/#{u.name}/#{u.options[:gh_repo]}"
   end
 end
