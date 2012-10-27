@@ -79,6 +79,12 @@ end
 
 # Nginx setup
 puts "Setting up nginx..."
+unless File.exists? "/etc/nginx/sites-enabled"
+  `mkdir /etc/nginx/sites-available`
+  `mkdir /etc/nginx/sites-enabled`
+  `curl "https://raw.github.com/asayers/provision/master/nginx.conf" > /etc/nginx/nginx.conf`
+  `curl "https://raw.github.com/asayers/provision/master/nginx_default.conf" > /etc/nginx/sites-available/default`
+end
 `systemctl start nginx`
 
 # Postgres setup
