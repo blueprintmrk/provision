@@ -60,6 +60,7 @@ class User
     `su - postgres -c "createuser -s #{@name}"`
   end
 end
+USERENTS = {}
 USERS.each { |user, opts| USERENTS << User.new(user, opts) }
 
 
