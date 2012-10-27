@@ -40,16 +40,16 @@ class User
     @name
   end
   def exists?
-    `cat /etc/passwd`.match(/^#{u}:/)
+    `cat /etc/passwd`.match(/^#{@name}:/)
   end
   def create!
-    `useradd -m #{u}`
+    `useradd -m #{@name}`
   end
   def generate_ssh_key!
-    `sudo -u #{u} ssh-keygen -t rsa -C #{EMAIL}`
+    `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
   def has_githib_access?
-    `sudo -u #{u} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GITHUB_USER}!/)
+    `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GITHUB_USER}!/)
   end
 end
 USERS.map! { |u| User.new(u) }
