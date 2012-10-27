@@ -3,7 +3,7 @@
 EMAIL="alex.sayers@gmail.com"
 GH_USER="asayers"
 PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
-USERS=["scientia"=>{db_user: true, gh_repo: "scientia"}]
+USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"}]
 
 class Pacman
   def self.populated?
@@ -60,8 +60,6 @@ class User
     `su - postgres -c "createuser -s #{@name}"`
   end
 end
-USERENTS = []
-USERS.each { |user, opts| USERENTS.push User.new(user, opts) }
 
 
 print "Checking pacman keyring is populated... "
@@ -107,9 +105,7 @@ puts "Enabling serives at boot"
 `systemctl enable nginx`
 `systemctl enable postgresql`
 
-p USERENTS
-
-USERENTS.each do |u|
+USERS.each do |u|
   print "Checking for #{u}... "
   unless u.exists?
     puts "does not exist! Creating..."
