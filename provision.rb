@@ -37,7 +37,7 @@ class User
     @name = name
   end
   def to_s
-    name
+    @name
   end
   def exists?
     `cat /etc/passwd`.match(/^#{u}:/)
@@ -53,6 +53,7 @@ class User
   end
 end
 USERS.map! { |u| User.new(u) }
+GH_PROJECTS.each{ |p,u| GH_PROJECTS[p] = User.new(u) }
 
 
 print "Checking pacman keyring is populated... "
