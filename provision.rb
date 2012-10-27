@@ -1,7 +1,5 @@
 #! /usr/bin/env ruby
 
-
-
 class Pacman
   def self.populated?
     !`pacman-key -l`.empty?
@@ -45,7 +43,7 @@ class User
   def generate_ssh_key!
     `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
-  def has_github_access?
+  def has_gh_access?
     `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com 2>&1`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
   end
   def clone_from_gh!
