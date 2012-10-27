@@ -1,15 +1,5 @@
 #! /usr/bin/env ruby
 
-class Pacman
-  def self.populated?
-    !`pacman-key -l`.empty?
-  end
-  def self.populate!
-  `pacman-key --init`
-  `pacman-key --populate archlinux`
-  end
-end
-
 class Package
   def initialize name
     @name = name
@@ -74,13 +64,6 @@ puts "Setting locale en_GB.UTF-8"
 `locale-gen`
 
 # Install packages
-print "Checking pacman keyring is populated... "
-unless Pacman.populated?
-  puts "it is not! Populating..."
-  Pacman.populate!
-else
-  puts "it is!"
-end
 print "Upgrading installed packages..."
 `pacman -Syu`
 puts "done!"
