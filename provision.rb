@@ -95,11 +95,11 @@ PACKAGES.each do |p|
 end
 
 # Nginx setup
-puts "Setting up nginx"
+puts "Setting up nginx..."
 `systemctl start nginx`
 
 # Postgres setup
-puts "Setting up postgres"
+puts "Setting up postgres..."
 `chown -R postgres /var/lib/postgres/`
 unless File.exist? "/var/lib/postgres/data"
   `su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"`
@@ -110,14 +110,22 @@ unless File.exist? "/run/postgresql"
 end
 `systemctl start postgresql`
 
+# Redis setup
+puts "Setting up redis..."
+`systemctl start redis`
+
 # Enable services at boot
-puts "Enabling serives at boot"
+print "Enabling serives at boot... "
 `systemctl enable nginx`
+print "nginx, "
 `systemctl enable postgresql`
+print "postgresql, "
+`systemctl enable redis`
+puts "redis"
 
 # Create users
 USERS.each do |u|
-  print "Checking for #{u}... "
+  print "Checking for user #{u}... "
   unless u.exists?
     puts "does not exist! Creating..."
     u.create!
@@ -127,7 +135,6 @@ USERS.each do |u|
     puts "exists!"
   end
   if u.options[:gh_repo]
-    puts "Warning! User doesn't have access to private repos!" unless u.has_gh_access?
     u.clone_from_gh! unless File.exist? "/home/#{u.name}/#{u.options[:gh_repo]}"
   end
 end
