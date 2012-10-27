@@ -54,7 +54,7 @@ class User
   end
 end
 
-
+# Set constants
 EMAIL="alex.sayers@gmail.com"
 GH_USER="asayers"
 PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
@@ -62,6 +62,17 @@ USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"})]
 
 PACKAGES.map! { |p| Package.new(p) }
 
+
+#General setup
+puts "Setting hostname #{HOSTNAME}..."
+`echo "#{HOSTNAME}" > /etc/hostname`
+puts "Setting locale en_GB.UTF-8"
+`echo 'LANG="en_GB.UTF-8"' > /etc/locale.conf`
+`echo "KEYMAP=uk\nFONT=\nFONT_MAP=" > /etc/vconsole.conf`
+`echo "en_GB.UTF-8 UTF-8" > /etc/locale.gen`
+`locale-gen`
+
+# Install packages
 print "Checking pacman keyring is populated... "
 unless Pacman.populated?
   puts "it is not! Populating..."
@@ -69,11 +80,9 @@ unless Pacman.populated?
 else
   puts "it is!"
 end
-
 print "Upgrading installed packages..."
 `pacman -Syu`
 puts "done!"
-
 PACKAGES.each do |p|
   print "Checking #{p}... "
   unless p.installed?
@@ -105,6 +114,7 @@ puts "Enabling serives at boot"
 `systemctl enable nginx`
 `systemctl enable postgresql`
 
+# Create users
 USERS.each do |u|
   print "Checking for #{u}... "
   unless u.exists?
