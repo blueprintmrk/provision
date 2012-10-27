@@ -14,8 +14,8 @@ else
 end
 puts "Upgrading installed packages..."
 `pacman -Syu`
-packages.each do |p|
-  print "Checking #{p}... "
+PACKAGES.each do |p|
+  print "  Checking #{p}... "
   if `pacman -Q git`.match(/^#{p} [0-9.-]*$/).nil?
     puts "not installed! Installing..."
     `pacman -S #{p}`
@@ -23,12 +23,13 @@ packages.each do |p|
     puts "already installed!"
   end
 end
-users.each do |u|
-  print "Checking #{u}... "
+puts "Setting up user accounts..."
+USERS.each do |u|
+  print "  Checking for #{u}... "
   if `cat /etc/passwd`.match(/^#{u}:/).nil?
     puts "does not exist! Creating..."
     `useradd -m #{u}`
-    `sudo -u #{u} ssh-keygen -t rsa -C #{email}`
+    `sudo -u #{u} ssh-keygen -t rsa -C #{EMAIL}`
   else
     puts "exists!"
   end
