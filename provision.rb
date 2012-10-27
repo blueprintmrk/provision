@@ -3,7 +3,7 @@
 EMAIL="alex.sayers@gmail.com"
 GH_USER="asayers"
 PACKAGES=["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
-USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"}]
+USERS=[User.new("scientia", {db_user: true, gh_repo: "scientia"})]
 
 class Pacman
   def self.populated?
