@@ -31,7 +31,9 @@ class User
     `useradd -m #{@name}`
   end
   def generate_ssh_key!
-    `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL} -f /home/#{@name}/.ssh/id_rsa -N #{(0...8).map{65.+(rand(26)).chr}.join}`
+    print "Passphrase for #{@name}: "
+    passphrase = gets
+    `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL} -f /home/#{@name}/.ssh/id_rsa -N #{passphrase}`
   end
   def has_gh_access?
     `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com 2>&1`.strip.split("\n").last.match(/^Hi #{GH_USER}!/)
