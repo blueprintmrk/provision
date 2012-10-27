@@ -60,8 +60,8 @@ class User
     `su - postgres -c "createuser -s #{@name}"`
   end
 end
-USERENTS = {}
-USERS.each { |user, opts| USERENTS << User.new(user, opts) }
+USERENTS = []
+USERS.each { |user, opts| USERENTS += User.new(user, opts) }
 
 
 print "Checking pacman keyring is populated... "
