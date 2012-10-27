@@ -1,10 +1,18 @@
 #! /usr/bin/env ruby
 
-
 USERS=["scientia"]
 PACKAGES=["zsh", "ruby", "git", "nginx", "postgresql", "redis"]
 EMAIL="alex.sayers@gmail.com"
 
+class Pacman
+  def self.populated?
+    !`pacman-key -l`.empty?
+  end
+  def self.populate!
+  `pacman-key --init`
+  `pacman-key --populate archlinux`
+  end
+end
 
 class Package
   def initialize name
@@ -14,20 +22,38 @@ class Package
     @name
   end
   def installed?
-    !`pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/).nil?
+    return !`pacman -Q #{@name}`.match(/^#{@name} [0-9a-z.-_]*$/).nil?
   end
   def install!
-    `pacman -S #{@name}`
+    `pacman -S --noconfirm #{@name}`
   end
 end
 PACKAGES.map! { |p| Package.new(p) }
 
+class User
+  def initialize name
+    @name = name
+  end
+  def to_s
+    name
+  end
+  def exists?
+    return !`cat /etc/passwd`.match(/^#{u}:/).nil?
+  end
+  def create!
+    `useradd -m #{u}`
+  end
+  def generate_ssh_key!
+    `sudo -u #{u} ssh-keygen -t rsa -C #{EMAIL}`
+  end
+end
+USERS.map! { |u| User.new(u) }
+
 
 print "Checking pacman keyring is populated... "
-if `pacman-key -l`.empty?
+unless Pacman.populated?
   puts "it is not! Populating..."
-  `pacman-key --init`
-  `pacman-key --populate archlinux`
+  Pacman.populate!
 else
   puts "it is!"
 end
@@ -48,13 +74,12 @@ end
 
 USERS.each do |u|
   print "Checking for #{u}... "
-  if `cat /etc/passwd`.match(/^#{u}:/).nil?
+  unless u.exists?
     puts "does not exist! Creating..."
-    `useradd -m #{u}`
-    `sudo -u #{u} ssh-keygen -t rsa -C #{EMAIL}`
+    u.create!
+    u.generate_ssh_key!
   else
     puts "exists!"
   end
 end
 # git clone git@github.com:asayers/$USER.git ~$USER
-
