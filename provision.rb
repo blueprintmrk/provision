@@ -49,7 +49,7 @@ class User
     `sudo -u #{@name} ssh-keygen -t rsa -C #{EMAIL}`
   end
   def has_github_access?
-    `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GITHUB_USER}!/)
+    `sudo -u #{@name} ssh -o StrictHostKeyChecking="no" -T git@github.com`.split("\n").last.match(/^Hi #{GH_USER}!/)
   end
 end
 USERS.map! { |u| User.new(u) }
