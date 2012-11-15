@@ -50,7 +50,7 @@ end
 HOSTNAME  = "vanaheimr"
 EMAIL     = "alex.sayers@gmail.com"
 GH_USER   = "asayers"
-PACKAGES  = ["zsh", "ruby", "git", "htop", "nginx", "postgresql", "redis"]
+PACKAGES  = ["base-devel", "zsh", "ruby", "git", "htop", "tmux", "nginx", "postgresql", "redis"]
 USERS     = [User.new("scientia", {db_user: true, gh_repo: "scientia"})]
 
 PACKAGES.map! { |p| Package.new(p) }
@@ -64,6 +64,10 @@ puts "Setting locale en_US.UTF-8"
 `echo "KEYMAP=uk\nFONT=\nFONT_MAP=" > /etc/vconsole.conf`
 `echo "en_US.UTF-8 UTF-8" > /etc/locale.gen`
 `locale-gen`
+puts "Setting terminfo for urxvt"
+`curl "https://raw.github.com/asayers/provision/master/rxvt-unicode-256color" > /usr/share/terminfo/r/rxvt-unicode-256color`
+# TODO: Edit sudoers to allow wheel
+# TODO: Change default shell to zsh
 
 # Install packages
 print "Upgrading installed packages..."
@@ -122,8 +126,14 @@ USERS.each do |u|
   else
     puts "exists!"
   end
-  if u.options[:gh_repo]
-    puts "Cloning into repo #{u.options[:gh_repo]}..."
-    u.clone_from_gh! unless File.exist? "/home/#{u.name}/#{u.options[:gh_repo]}"
-  end
+#  if u.options[:gh_repo]
+#    puts "Cloning into repo #{u.options[:gh_repo]}..."
+#    u.clone_from_gh! unless File.exist? "/home/#{u.name}/#{u.options[:gh_repo]}"
+#  end
+
+  # TODO: Add to wheel group
+  # TODO: Add password
+  # TODO: Add database-user password
+  # TODO: git config --global user.email "alex.sayers@gmail.com"
+  # TODO: git config --global user.name "Alex Sayers"
 end
