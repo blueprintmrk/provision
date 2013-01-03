@@ -3,7 +3,7 @@
 # This script will set up a fresh install of Arch Linux with ruby and nginx, as
 # well as the usual necessities. It must be run interactively.
 
-URL="https://raw.github.com/asayers/provision/master/nginx"
+URL="https://raw.github.com/asayers/provision/master"
 HOSTNAME="vanaheimr"
 NAME="Alex Sayers"
 EMAIL="alex.sayers@gmail.com"
@@ -27,7 +27,7 @@ pacman-key --init
 pkill haveged
 pacman-key --populate archlinux
 # This step is impossible unattended; if it must be, use:
-#curl "https://raw.github.com/asayers/provision/master/pacman.conf" > ~/pacman.conf
+#curl "$URL/pacman.conf" > ~/pacman.conf
 # then (skipping the `pacman-key --populate` step):
 #pacman --noconfirm --config ~/pacman.conf OPTIONS
 
@@ -49,7 +49,7 @@ useradd -m -g users -G wheel -s /bin/bash deployer
 passwd deployer
 chown -R deployer:users /home/deployer
 chmod a+rx /home/deployer
-su - deployer -c "ssh-keygen -t rsa -C $EMAIL -f ~/.ssh/id_rsa -N"
+su - deployer -c "ssh-keygen -t rsa -C $EMAIL -f ~/.ssh/id_rsa"
 su - deployer -c "curl '$URL/id_rsa.pub' > ~/.ssh/authorized_keys"
 su - deployer -c "curl '$URL/bashrc' > ~/.bashrc"
 
@@ -74,7 +74,7 @@ mkdir sites-enabled
 mkdir conf
 curl "$URL/nginx/nginx.conf" > nginx.conf
 curl "$URL/nginx/mime.types" > mime.types
-curl "$URL/mginx/default.conf" > sites-available/default.conf
+curl "$URL/nginx/default.conf" > sites-available/default.conf
 cd conf; curl -O "$URL/nginx/{cache-busting,cross-domain-ajax,cross-domain-fonts,expires,h5bp,no-transform,protect-system-files,x-ua-compatible}.conf"
 systemctl enable nginx
 systemctl start nginx
