@@ -46,31 +46,25 @@ passwd deployer
 chown -R deployer:users /home/deployer
 chmod a+rx /home/deployer
 su deployer
-cd ~
-echo ":: config..."
-curl "$URL/home.tar" | tar xv     # Includes terminfo, ssh authorized_keys, and bashrc
-echo ":: ssh..."
-ssh-keygen -t rsa -C "$EMAIL" -f ~/.ssh/id_rsa
-echo ":: git..."
-git config --global user.name "$NAME"
-git config --global user.email "$EMAIL"
-echo "Setting up ruby"; read
-curl https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer | bash
-rbenv install 1.9.3-p194
-rbenv global 1.9.3-p194
-rbenv bootstrap
-rbenv rehash
+  cd ~
+  echo ":: config..."
+  curl "$URL/home.tar" | tar xv     # Includes terminfo, ssh authorized_keys, and bashrc
+  echo ":: ssh..."
+  ssh-keygen -t rsa -C "$EMAIL" -f ~/.ssh/id_rsa
+  echo ":: git..."
+  git config --global user.name "$NAME"
+  git config --global user.email "$EMAIL"
+  echo ":: ruby..."
+  curl https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer | bash
+  rbenv install 1.9.3-p194
+  rbenv global 1.9.3-p194
+  rbenv bootstrap
+  rbenv rehash
 exit
 
 echo "Setting up nginx"; read
 cd /etc/nginx
-mkdir sites-available
-mkdir sites-enabled
-mkdir conf
-curl "$URL/nginx/nginx.conf" > nginx.conf
-curl "$URL/nginx/mime.types" > mime.types
-curl "$URL/nginx/default.conf" > sites-available/default.conf
-cd conf; curl -O "$URL/nginx/{cache-busting,cross-domain-ajax,cross-domain-fonts,expires,h5bp,no-transform,protect-system-files,x-ua-compatible}.conf"
+curl "$URL/nginx.tar" | tar xv     # Includes h5bp nginx conf
 systemctl enable nginx
 systemctl start nginx
 
