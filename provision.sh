@@ -37,7 +37,7 @@ pacman -Syu --noconfirm
 pacman -S --noconfirm base-devel htop tmux vim git nginx
 #postgresql redis
 
-echo "Adding urxvt terminfo"; read
+echo "Adding terminfo"; read
 curl "$URL/rxvt-unicode-256color" > /usr/share/terminfo/r/rxvt-unicode-256color
 
 echo "Configuring user: root"; read
