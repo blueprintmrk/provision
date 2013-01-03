@@ -26,7 +26,7 @@ haveged -w 1024
 pacman-key --init
 pkill haveged
 pacman-key --populate archlinux
-# This step is impossible unattended; if it must be, use:
+# This step is impossible unattended; if it must be unattended, use:
 #curl "$URL/pacman.conf" > ~/pacman.conf
 # then (skipping the `pacman-key --populate` step):
 #pacman --noconfirm --config ~/pacman.conf OPTIONS
@@ -34,11 +34,7 @@ pacman-key --populate archlinux
 echo "Upgrading system"; read
 pacman -Syu --noconfirm
 pacman -Syu --noconfirm
-pacman -S --noconfirm base-devel htop tmux vim git nginx
-#postgresql redis
-
-echo "Adding terminfo"; read
-curl "$URL/rxvt-unicode-256color" > /usr/share/terminfo/r/rxvt-unicode-256color
+pacman -S --noconfirm base-devel tar htop tmux vim git nginx #postgresql #redis
 
 echo "Configuring user: root"; read
 passwd
@@ -49,17 +45,16 @@ useradd -m -g users -G wheel -s /bin/bash deployer
 passwd deployer
 chown -R deployer:users /home/deployer
 chmod a+rx /home/deployer
-su - deployer -c "ssh-keygen -t rsa -C $EMAIL -f ~/.ssh/id_rsa"
-su - deployer -c "curl '$URL/id_rsa.pub' > ~/.ssh/authorized_keys"
-su - deployer -c "curl '$URL/bashrc' > ~/.bashrc"
-
-echo "Setting up git"; read
-su - deployer -c "git config --global user.name '$NAME'"
-su - deployer -c "git config --global user.email '$EMAIL'"
-
-echo "Setting up ruby"; read
 su deployer
 cd ~
+echo ":: config..."
+curl "$URL/home.tar" | tar xv     # Includes terminfo, ssh authorized_keys, and bashrc
+echo ":: ssh..."
+ssh-keygen -t rsa -C "$EMAIL" -f ~/.ssh/id_rsa
+echo ":: git..."
+git config --global user.name "$NAME"
+git config --global user.email "$EMAIL"
+echo "Setting up ruby"; read
 curl https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer | bash
 rbenv install 1.9.3-p194
 rbenv global 1.9.3-p194
