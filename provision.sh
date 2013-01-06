@@ -3,10 +3,10 @@
 # This script will set up a fresh install of Arch Linux with ruby and nginx, as
 # well as the usual necessities. It must be run interactively.
 
-URL="https://raw.github.com/asayers/provision/master"
-HOSTNAME="vanaheimr"
-NAME="Alex Sayers"
-EMAIL="alex.sayers@gmail.com"
+export URL="https://raw.github.com/asayers/provision/master"
+export HOSTNAME="vanaheimr"
+export NAME="Alex Sayers"
+export EMAIL="alex.sayers@gmail.com"
 
 echo "Setting hostname to $HOSTNAME"; read
 echo $HOSTNAME > /etc/hostname
@@ -34,7 +34,7 @@ pacman-key --populate archlinux
 echo "Upgrading system"; read
 pacman -Syu --noconfirm
 pacman -Syu --noconfirm
-pacman -S --noconfirm base-devel tar htop tmux vim git nginx #postgresql #redis
+pacman -S --noconfirm base-devel sudo mosh tar htop tmux vim git nginx #postgresql #redis
 
 echo "Configuring user: root"; read
 passwd
@@ -45,8 +45,8 @@ useradd -m -g users -G wheel -s /bin/bash deployer
 passwd deployer
 chown -R deployer:users /home/deployer
 chmod a+rx /home/deployer
+cd /home/deployer
 su deployer
-  cd ~
   echo ":: config..."
   curl "$URL/home.tar" | tar xv     # Includes terminfo, ssh authorized_keys, and bashrc
   echo ":: ssh..."
