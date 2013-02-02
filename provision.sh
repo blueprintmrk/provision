@@ -13,8 +13,8 @@
 # 
 # This is because I use this script for provisioning my own server instances.
 # If you want to use it in production, change $URL to a location you control
-# (with your own public key in "id_rsa.pub"). Otherwise, ENSURE THAT YOU DELETE
-# "~deployer/.ssh/authorized_keys" after setup is finished.
+# (with your own public key in "authorized_keys"). Otherwise, ENSURE THAT YOU
+# DELETE "~deployer/.ssh/authorized_keys" after setup is finished.
 #
 # See github.org/asayers/provision/ for auxiliary files
 
