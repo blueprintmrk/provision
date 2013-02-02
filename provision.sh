@@ -8,7 +8,8 @@
 #              ==================
 # 
 # This script will add MY ssh public key to YOUR list of authorized keys. In
-# other words, after the script has run, I WILL BE ABLE TO GAIN ROOT ACCESS!
+# other words, after the script has run, I WILL BE ABLE TO GAIN ACCESS TO YOUR
+# SERVER!
 # 
 # This is because I use this script for provisioning my own server instances.
 # If you want to use it in production, change $URL to a location you control
