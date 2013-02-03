@@ -1,12 +1,14 @@
 
-A general-purpose server provisioning script for Arch Linux systems. It is intended to use used as a guide, and expects a clean install of Arch Linux. It will configure:
+A general-purpose server provisioning script for Arch Linux systems. It is
+intended for pedagogical use, but can be used in production (see warnings
+below). It expects a clean install of Arch Linux and will configure:
 
 - [nginx](http://wiki.nginx.org/Main), a static webserver
 - [postgresql](http://www.postgresql.org/), a relational database
 - [mongodb](http://www.mongodb.org/), a NoSQL database
 - [redis](http://redis.io/), a key-value store
 - [nodejs](http://nodejs.org/), for running node apps
-- [ruby](http://github.com/sstephenson/rbenv), for running rack apps
+- [rbenv](http://github.com/sstephenson/rbenv), for running ruby apps
 
 It also installs some utilities, including [ssh](http://www.op enssh.com/),
 [git](http://git-scm.com/), and [tmux](http://tmux.sourceforge.net/). You might
