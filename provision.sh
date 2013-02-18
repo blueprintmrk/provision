@@ -52,14 +52,14 @@ pacman-key --populate archlinux
 echo "Upgrading system"
 pacman -Syu --noconfirm
 pacman -Syu --noconfirm
-pacman -S --noconfirm base-devel sudo mosh tar htop tmux vim git nginx nodejs mongodb #postgresql #redis
+pacman -S --noconfirm base-devel sudo mosh tar htop tmux zsh vim git nginx nodejs mongodb postgresql redis
 
 echo "Configuring user: root"
 passwd
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 echo "Configuring user: deployer"
-useradd -m -g users -G wheel -s /bin/bash deployer
+useradd -m -g users -G wheel -s /bin/zsh deployer
 passwd deployer
 chown -R deployer:users /home/deployer
 chmod a+rx /home/deployer
