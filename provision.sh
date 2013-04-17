@@ -16,15 +16,14 @@
 # (with your own public key in "authorized_keys"). Otherwise, ENSURE THAT YOU
 # DELETE "~deployer/.ssh/authorized_keys" after setup is finished.
 #
-# See github.org/asayers/provision/ for auxiliary files
+# See github.org/asayers/provision/ for the auxiliary files
 
-# You should probably change these
+# You should probably change these. You might want to change the locale stuff below too.
 export HOSTNAME="vanaheimr"
 export NAME="Alex Sayers"
 export EMAIL="alex.sayers@gmail.com"
-# config files will be downloaded from here. You can leave this as-is, or set
-# up your own location.
-export URL="https://raw.github.com/asayers/provision/master"
+export URL="https://raw.github.com/asayers/provision/master"    # config files will be downloaded from here.
+
 
 echo "Setting hostname to $HOSTNAME"
 echo $HOSTNAME > /etc/hostname
@@ -44,10 +43,9 @@ haveged -w 1024
 pacman-key --init
 pkill haveged
 pacman-key --populate archlinux
-# This step is impossible unattended; if it must be unattended, use:
+# This last step is impossible unattended. If you must run this script unattended you can skip it by running:
 #curl "$URL/pacman.conf" > ~/pacman.conf
-# then (skipping the `pacman-key --populate` step):
-#pacman --noconfirm --config ~/pacman.conf OPTIONS
+#alias pacman="pacman --noconfirm --config ~/pacman.conf"
 
 echo "Upgrading system"
 pacman -Syu --noconfirm
