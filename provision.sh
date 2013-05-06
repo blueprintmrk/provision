@@ -47,6 +47,9 @@ pacman-key --populate archlinux
 #curl "$URL/pacman.conf" > ~/pacman.conf
 #alias pacman="pacman --noconfirm --config ~/pacman.conf"
 
+echo "Installing AUR helper"
+bash <(curl aur.sh) -si packer    # We're using packer, because it doesn't have AUR dependencies.
+
 echo "Upgrading system"
 pacman -Syu --noconfirm
 pacman -Syu --noconfirm
