@@ -53,7 +53,7 @@ bash <(curl aur.sh) -si packer    # We're using packer, because it doesn't have 
 echo "Upgrading system"
 pacman -Syu --noconfirm
 pacman -Syu --noconfirm
-pacman -S --noconfirm base-devel sudo mosh tar htop tmux zsh vim git nginx nodejs mongodb postgresql redis
+pacman -S --noconfirm base-devel sudo mosh tar htop tmux zsh vim git nodejs
 
 echo "Configuring user: root"
 passwd
@@ -85,12 +85,14 @@ su deployer
 exit
 
 echo "Setting up nginx"
+pacman -S --noconfirm nginx
 cd /etc/nginx
 curl "$URL/nginx.tar" | tar xv     # Includes h5bp nginx conf
 systemctl enable nginx
 systemctl start nginx
 
 echo "Setting up postgres"
+pacman -S --noconfirm postgresql
 chown -R postgres /var/lib/postgres/
 su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"
 su - postgres -c "createuser -s deployer"
@@ -101,10 +103,12 @@ systemctl start postgresql
 echo "Maybe add a password for the deployer postgres user?"
 
 echo "Setting up redis"
+pacman -S --noconfirm redis
 systemctl enable redis
 systemctl start redis
 
 echo "Setting up mongo"
+pacman -S --noconfirm mongodb
 systemctl enable mongodb
 systemctl start mongodb
 
