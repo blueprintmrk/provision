@@ -10,11 +10,11 @@
 #               SECURITY WARNING!
 #              ===================
 # 
-# This script populates your ~/.ssh/authorised_keys with the authorised keys
+# This script populates your ~/.ssh/authorized_keys with the authorised keys
 # for the Github account $GHUSER. This means that if a computer can push
 # commits to github repos owned by $GHUSER, then by the time this script is
 # done it will also be able to log into your machine! Be careful! If you enter
-# an invalid username, your ~/.ssh/authorised_keys will be filled with garbage.
+# an invalid username, your ~/.ssh/authorized_keys will be filled with garbage.
 
 # See github.org/asayers/provision/ for the auxiliary files
 
