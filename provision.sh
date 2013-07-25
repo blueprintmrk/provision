@@ -1,28 +1,31 @@
 #! /bin/bash
 # 
-# This script will take a fresh install of Arch Linux and set it up with ruby
-# and nginx, as well as the usual necessities. It must be run interactively.
+# This script is designed to be run on a fresh install of Arch Linux. You are
+# advised to check through it and comment out the things you don't want. By
+# default it does basic setup, then installs and configures nginx, postgres,
+# mongo, redis, ruby, and nodejs. As-is, it must be run interactively (although
+# it can be run unattended - see comments in source).
 # 
-#              ==================
-#              IMPORTANT WARNING!
-#              ==================
+#              ===================
+#               SECURITY WARNING!
+#              ===================
 # 
-# This script will add MY ssh public key to YOUR list of authorized keys. In
-# other words, after the script has run, I WILL BE ABLE TO GAIN ACCESS TO YOUR
-# SERVER!
-# 
-# This is because I use this script for provisioning my own server instances.
-# If you want to use it in production, change $URL to a location you control
-# (with your own public key in "authorized_keys"). Otherwise, ENSURE THAT YOU
-# DELETE "~deployer/.ssh/authorized_keys" after setup is finished.
-#
+# This script populates your ~/.ssh/authorised_keys with the authorised keys
+# for the Github account $GHUSER. This means that if a computer can push
+# commits to github repos owned by $GHUSER, then by the time this script is
+# done it will also be able to log into your machine! Be careful! If you enter
+# an invalid username, your ~/.ssh/authorised_keys will be filled with garbage.
+
 # See github.org/asayers/provision/ for the auxiliary files
 
-# You should probably change these. You might want to change the locale stuff below too.
-export HOSTNAME="vanaheimr"
-export NAME="Alex Sayers"
-export EMAIL="alex.sayers@gmail.com"
-export URL="https://raw.github.com/asayers/provision/master"    # config files will be downloaded from here.
+# You should probably change these.
+export HOSTNAME="vanaheimr"           # Desired hostname
+export NAME="Alex Sayers"             # Your full name (for git config)
+export EMAIL="alex.sayers@gmail.com"  # Your email (for ssh and git config)
+export GHUSER=""                      # Your github username (for authorised SSH keys) - MAKE SURE THIS IS YOU!
+
+# Config files will be downloaded from here. This can be left alone, but feel free to host your own configs.
+export URL="https://raw.github.com/asayers/provision/master" # config files will be downloaded from here.
 
 
 echo "Setting hostname to $HOSTNAME"
@@ -67,12 +70,11 @@ chmod a+rx /home/deployer
 cd /home/deployer
 su deployer
   echo ":: config..."
-  # home.tar includes terminfo, ssh authorized_keys, and bashrc. Note that this
-  # line may introduce a SERIOUS SECURITY VULNERABILITY. See information at the
-  # top.
+  # home.tar includes terminfo, bashrc, zshrc, and tmux config.
   curl "$URL/home.tar" | tar xv
   echo ":: ssh..."
   ssh-keygen -t rsa -C "$EMAIL" -f ~/.ssh/id_rsa
+  curl "https://github.com/"$GHUSER".keys" > .ssh/authorized_keys
   echo ":: git..."
   git config --global user.name "$NAME"
   git config --global user.email "$EMAIL"
