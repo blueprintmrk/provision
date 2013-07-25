@@ -16,15 +16,21 @@ It also installs some utilities, including [ssh](http://www.op enssh.com/),
 [git](http://git-scm.com/), and [tmux](http://tmux.sourceforge.net/). You might
 find it useful to look through if you haven't provisioned a server before.
 
-Please note the **serious security issue** introduced by running this script
-as-is: `home.tar` contains a `.ssh/authorized_keys` file containing *my
-personal public key*. If you run the script verbatim this gets copied into the
-deployer user's home directory. If you do this, please rewrite
-`authorized_keys` with your own public key.
+There's some variables to set at the top of the script. Obviously you should
+check it through as well.
 
-If you intend to run this script, it is recommended that you fork it and modify
-the files inside the `home` directory, updating the `$URL` variable to point to
-the new location.
+**Security issue**: At the top of the script you're asked for a github
+username. This is because we retrieve the SSH keys which have been authorised
+to make changes to repos owned by that user, and use them to populate
+`~deployer/.ssh/authorized_keys`. This means that any computer which can push
+commits to repos owned by $GHUSER will be able to log in - without a password -
+to your machine. This is cool if $GHUSER is you, but not so good otherwise.
+Make sure it is!
+
+The script also downloads config files (packaged as `home.tar` and `nginx.tar`)
+from this repo. If you want it to install different config files, just host
+your own tarballs somewhere are set the `$URL` to be the base URL - ie. the
+tarballs should be hosted at `$URL/home.tar` and `$URL/nginx.tar`.
 
 
 License
